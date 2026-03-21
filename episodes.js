@@ -3,12 +3,13 @@
 //  Add new episodes at the TOP of each array.
 //
 //  Fields:
-//    num         – episode number (string)
-//    title       – episode title
-//    description – short blurb
-//    date        – "MM/DD/YYYY"
-//    spotify     – Spotify episode ID (from the share URL)
-//    youtube     – YouTube video ID (from the watch URL), or null
+//    title    – episode title
+//    date     – "MM/DD/YYYY"
+//    spotify  – Spotify episode ID (from the share URL), or null
+//    youtube  – YouTube video ID (from the watch URL), or null
+//
+//  NOTE: descriptions are pulled automatically from YouTube.
+//  Only add a description manually if the episode has no YouTube ID.
 //
 //  To find IDs:
 //    Spotify URL: open.spotify.com/episode/EPISODE_ID  ← copy that part
@@ -18,23 +19,20 @@
 const kitchenEpisodes = [
   {
     title: "The Power Of Affirmation & Self Advocacy w/ Tatiauna Holland",
-    description: "Tatiauna Holland delves into the importance of self-advocacy and the power of affirmation. She shares personal stories about growing up in a supportive environment that encouraged her to express herself and pursue her dreams. Tatiauna discusses the challenges of societal expectations, particularly within the Black community, and emphasizes the need for mindset shifts to overcome these barriers. The conversation also touches on the significance of teaching children to advocate for themselves and the impact of having affirming role models.",
     date: "03/13/2026",
-    spotify: "SPOTIFY_EPISODE_ID",
+    spotify: null,
     youtube: "9CoWP2DazGA"
   },
   {
     title: "The Impact Of Technology On The Youth w/ Unique Starr",
-    description: "In this conversation, Dav Lewis and guest, Unique Starr, discusse her journey through the Harvard Social Impact Initiative, grappling with feelings of shame and identity as he navigates the intersection of elite education and his commitment to his community. They delve into the impact of technology on children, particularly regarding screen addiction, and Unique Starr shares her personal experiences as a parent who has chosen to limit technology for his daughter. The discussion also touches on food choices, cultural identity, and the challenges of cooking and meal prep in a busy life, highlighting the importance of being mindful about what we consume and how it shapes our lives.",
     date: "03/06/2026",
-    spotify: "SPOTIFY_EPISODE_ID",
+    spotify: null,
     youtube: "q3RHFCVmqjE"
   },
   {
     title: "Justice & Forgiveness",
-    description: "In this episode Dav and special guest, Tatiuana Holland, explore a range of topics including cooking (Oyster Mushrooms + Dirty Rice), Louisiana roots, academic journey, legal career, the psychology of law, fairness in the legal system, collaborative justice, the criminal justice system, forgiveness, and self-healing. The discussion delves into the concept of collaborative justice and the complexities of forgiveness and self-healing.",
     date: "02/27/2026",
-    spotify: "SPOTIFY_EPISODE_ID",
+    spotify: null,
     youtube: "VremHABoPqw"
   }
 ];
@@ -42,23 +40,20 @@ const kitchenEpisodes = [
 const couchEpisodes = [
   {
     title: "Detaching To Align In Purpose w/ Unique Starr",
-    description: "A short description of the conversation or topic covered in this episode.",
     date: "03/20/2026",
-    spotify: "SPOTIFY_EPISODE_ID",
+    spotify: null,
     youtube: "_TubobfNp_0"
   },
   {
     title: "Part III: Give Me A Year by Shonda Scott",
-    description: "A short description of the conversation or topic covered in this episode.",
     date: "01/23/2026",
-    spotify: "SPOTIFY_EPISODE_ID",
+    spotify: null,
     youtube: "K7h7wnsRCNY"
   },
   {
     title: "Part II: Give Me A Year by Shonda Scott",
-    description: "A short description of the conversation or topic covered in this episode.",
     date: "MM/DD/YYYY",
-    spotify: "SPOTIFY_EPISODE_ID",
+    spotify: null,
     youtube: "3ava3d1YsNI"
   }
 ];
