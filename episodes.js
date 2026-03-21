@@ -87,6 +87,13 @@ function truncate(text) {
   return { short: text.slice(0, text.lastIndexOf(" ", TRUNCATE_LENGTH)) + "…", isTruncated: true };
 }
 
+// ─────────────────────────────────────────────
+//  YOUTUBE API KEY
+//  Get one free at: console.cloud.google.com
+//  Enable "YouTube Data API v3" then create an API key
+// ─────────────────────────────────────────────
+const YOUTUBE_API_KEY = "YOUR_API_KEY_HERE";
+
 // All episodes in one flat list so cards can reference them by index
 const allEpisodes = [...kitchenEpisodes, ...couchEpisodes];
 
@@ -115,19 +122,32 @@ function buildCard(ep, index) {
       ></iframe>`
     : "";
 
-  const { short, isTruncated } = truncate(ep.description);
+  const desc = ep.description || "";
+  const { short, isTruncated } = truncate(desc);
   const readMore = isTruncated
     ? `<button class="read-more" data-index="${index}">Read more</button>`
     : "";
 
   return `
-    <div class="card">
+    <div class="card" id="card-${index}">
       <h3>${ep.title}</h3>
-      <p>${short}${readMore}</p>
+      <p class="card-desc">${short}${readMore}</p>
       <div class="ep-meta">${ep.date}</div>
       ${spotify}
       ${youtube}
     </div>`;
+}
+
+function updateCardDesc(index) {
+  const ep = allEpisodes[index];
+  const card = document.getElementById(`card-${index}`);
+  if (!card) return;
+  const descEl = card.querySelector(".card-desc");
+  const { short, isTruncated } = truncate(ep.description || "");
+  const readMore = isTruncated
+    ? `<button class="read-more" data-index="${index}">Read more</button>`
+    : "";
+  descEl.innerHTML = short + readMore;
 }
 
 function buildDishList(dishes) {
@@ -137,12 +157,39 @@ function buildDishList(dishes) {
 function openModal(ep) {
   document.getElementById("modal-title").textContent = ep.title;
   document.getElementById("modal-meta").textContent = ep.date;
-  document.getElementById("modal-description").textContent = ep.description;
+  document.getElementById("modal-description").textContent = ep.description || "";
   document.getElementById("modal-overlay").classList.add("open");
 }
 
 function closeModal() {
   document.getElementById("modal-overlay").classList.remove("open");
+}
+
+async function fetchYouTubeDescriptions() {
+  if (!YOUTUBE_API_KEY || YOUTUBE_API_KEY === "YOUR_API_KEY_HERE") return;
+
+  const ids = allEpisodes
+    .map((ep, i) => ({ id: ep.youtube, index: i }))
+    .filter(({ id }) => validId(id));
+
+  if (!ids.length) return;
+
+  const videoIds = ids.map(({ id }) => id).join(",");
+  const url = `https://www.googleapis.com/youtube/v3/videos?part=snippet&id=${videoIds}&key=${YOUTUBE_API_KEY}`;
+
+  try {
+    const res = await fetch(url);
+    const data = await res.json();
+    data.items.forEach(item => {
+      const match = ids.find(({ id }) => id === item.id);
+      if (match && !allEpisodes[match.index].description) {
+        allEpisodes[match.index].description = item.snippet.description;
+        updateCardDesc(match.index);
+      }
+    });
+  } catch (e) {
+    console.warn("Could not fetch YouTube descriptions:", e);
+  }
 }
 
 document.getElementById("modal-close").addEventListener("click", closeModal);
@@ -161,3 +208,5 @@ document.addEventListener("click", function(e) {
 document.getElementById("kitchen-grid").innerHTML = kitchenEpisodes.map(buildCard).join("");
 document.getElementById("couch-grid").innerHTML   = couchEpisodes.map((ep, i) => buildCard(ep, kitchenEpisodes.length + i)).join("");
 document.getElementById("dish-list").innerHTML    = buildDishList(dishes);
+
+fetchYouTubeDescriptions();

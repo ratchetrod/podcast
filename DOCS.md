@@ -4,6 +4,43 @@ Personal reference for APIs, embeds, and troubleshooting.
 
 ---
 
+## YouTube Auto-Descriptions
+
+Episode descriptions are pulled automatically from YouTube using the video ID already in `episodes.js`. You do **not** need to write them manually.
+
+### Setup (one-time)
+
+1. Go to [console.cloud.google.com](https://console.cloud.google.com)
+2. Create a project (or select an existing one)
+3. Go to **APIs & Services** → **Library** → search **YouTube Data API v3** → Enable it
+4. Go to **APIs & Services** → **Credentials** → **Create Credentials** → **API key**
+5. Copy the key and paste it into `episodes.js`:
+
+```js
+const YOUTUBE_API_KEY = "paste-your-key-here";
+```
+
+### How it works
+
+- On page load, the script collects all YouTube video IDs from your episode arrays
+- It fetches descriptions from the YouTube API in a single request
+- Cards and modals update automatically — no description field needed in the array
+- If an episode has no YouTube ID, or you've already written a `description` manually, the auto-fetch is skipped for that episode
+
+### Free tier limits
+
+YouTube Data API gives you **10,000 units/day** free. Each description fetch costs 1 unit per video. You'd have to load the page thousands of times in a day to hit the limit.
+
+### Troubleshooting
+
+| Problem | Fix |
+|---|---|
+| Descriptions not showing | Check the API key is pasted correctly in `episodes.js` |
+| "API key not valid" error in console | Make sure YouTube Data API v3 is enabled in your Google Cloud project |
+| Descriptions show for some episodes but not others | Only episodes with a valid YouTube ID are fetched |
+
+---
+
 ## Spotify Podcast Embed
 
 Use Spotify's oEmbed to embed individual episodes directly in the page.
