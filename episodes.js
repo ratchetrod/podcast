@@ -4,12 +4,11 @@
 //
 //  Fields:
 //    title    – episode title
-//    date     – "MM/DD/YYYY"
 //    spotify  – Spotify episode ID (from the share URL), or null
 //    youtube  – YouTube video ID (from the watch URL), or null
 //
-//  NOTE: descriptions are pulled automatically from YouTube.
-//  Only add a description manually if the episode has no YouTube ID.
+//  NOTE: description and date are pulled automatically from YouTube.
+//  Only add them manually if the episode has no YouTube ID.
 //
 //  To find IDs:
 //    Spotify URL: open.spotify.com/episode/EPISODE_ID  ← copy that part
@@ -19,19 +18,16 @@
 const kitchenEpisodes = [
   {
     title: "The Power Of Affirmation & Self Advocacy w/ Tatiauna Holland",
-    date: "03/13/2026",
     spotify: null,
     youtube: "9CoWP2DazGA"
   },
   {
     title: "The Impact Of Technology On The Youth w/ Unique Starr",
-    date: "03/06/2026",
     spotify: null,
     youtube: "q3RHFCVmqjE"
   },
   {
     title: "Justice & Forgiveness",
-    date: "02/27/2026",
     spotify: null,
     youtube: "VremHABoPqw"
   }
@@ -40,19 +36,16 @@ const kitchenEpisodes = [
 const couchEpisodes = [
   {
     title: "Detaching To Align In Purpose w/ Unique Starr",
-    date: "03/20/2026",
     spotify: null,
     youtube: "_TubobfNp_0"
   },
   {
     title: "Part III: Give Me A Year by Shonda Scott",
-    date: "01/23/2026",
     spotify: null,
     youtube: "K7h7wnsRCNY"
   },
   {
     title: "Part II: Give Me A Year by Shonda Scott",
-    date: "MM/DD/YYYY",
     spotify: null,
     youtube: "3ava3d1YsNI"
   }
@@ -129,7 +122,7 @@ function buildCard(ep, index) {
     </div>`;
 }
 
-function updateCardDesc(index) {
+function updateCard(index) {
   const ep = allEpisodes[index];
   const card = document.getElementById(`card-${index}`);
   if (!card) return;
@@ -139,6 +132,7 @@ function updateCardDesc(index) {
     ? `<button class="read-more" data-index="${index}">Read more</button>`
     : "";
   descEl.innerHTML = short + readMore;
+  if (ep.date) card.querySelector(".ep-meta").textContent = ep.date;
 }
 
 function buildDishList(dishes) {
@@ -162,9 +156,10 @@ async function fetchYouTubeDescriptions() {
     if (!res.ok) return;
     const data = await res.json();
     allEpisodes.forEach((ep, index) => {
-      if (ep.youtube && data[ep.youtube] && !ep.description) {
-        ep.description = data[ep.youtube];
-        updateCardDesc(index);
+      if (ep.youtube && data[ep.youtube]) {
+        ep.description = ep.description || data[ep.youtube].description;
+        ep.date = ep.date || data[ep.youtube].date;
+        updateCard(index);
       }
     });
   } catch (e) {

@@ -41,7 +41,13 @@ https.get(url, res => {
 
     const out = {};
     json.items.forEach(item => {
-      out[item.id] = item.snippet.description;
+      const raw = item.snippet.publishedAt;
+      const d = new Date(raw);
+      const date = `${String(d.getMonth() + 1).padStart(2, "0")}/${String(d.getDate()).padStart(2, "0")}/${d.getFullYear()}`;
+      out[item.id] = {
+        description: item.snippet.description,
+        date
+      };
     });
 
     fs.writeFileSync("descriptions.json", JSON.stringify(out, null, 2));
