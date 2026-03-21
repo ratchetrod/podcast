@@ -159,11 +159,49 @@ Drop embeds inside the relevant section's card or directly below the section hea
 
 ---
 
+## Adding a New Episode
+
+All episode data lives in **`episodes.js`** — that's the only file you touch when a new episode drops.
+
+### Steps
+
+1. Open `episodes.js`
+2. Add a new entry at the **top** of the correct array (`kitchenEpisodes` or `couchEpisodes`)
+3. Fill in the fields:
+
+```js
+{
+  num: "07",
+  title: "Your Episode Title",
+  description: "Short description of what was covered.",
+  date: "03/21/2026",
+  spotify: "SPOTIFY_EPISODE_ID",   // from open.spotify.com/episode/THIS_PART
+  youtube: "YOUTUBE_VIDEO_ID"      // from youtube.com/watch?v=THIS_PART  (or null)
+},
+```
+
+4. Save, commit, push — the page updates automatically.
+
+### Adding a dish
+
+In the same `episodes.js` file, add to the `dishes` array at the top:
+
+```js
+const dishes = [
+  "New Dish Name",   // ← add here
+  "Dish Name One",
+  ...
+];
+```
+
+---
+
 ## File Structure
 
 ```
 podcast/
-├── index.html      # Main page
+├── index.html      # Main page (no need to edit for new episodes)
 ├── styles.css      # All styling
+├── episodes.js     # Episode data — edit this for every new release
 └── DOCS.md         # This file
 ```
