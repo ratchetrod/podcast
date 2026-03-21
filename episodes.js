@@ -17,7 +17,13 @@
 
 const kitchenEpisodes = [
   {
-    num: "03",
+    title: "The Power Of Affirmation & Self Advocacy w/ Tatiauna Holland",
+    description: "Tatiauna Holland delves into the importance of self-advocacy and the power of affirmation. She shares personal stories about growing up in a supportive environment that encouraged her to express herself and pursue her dreams. Tatiauna discusses the challenges of societal expectations, particularly within the Black community, and emphasizes the need for mindset shifts to overcome these barriers. The conversation also touches on the significance of teaching children to advocate for themselves and the impact of having affirming role models.",
+    date: "03/13/2026",
+    spotify: "SPOTIFY_EPISODE_ID",
+    youtube: "9CoWP2DazGA"
+  },
+  {
     title: "Episode Title",
     description: "A short description of what was talked about or cooked during this episode.",
     date: "MM/DD/YYYY",
@@ -25,15 +31,6 @@ const kitchenEpisodes = [
     youtube: null
   },
   {
-    num: "02",
-    title: "Episode Title",
-    description: "A short description of what was talked about or cooked during this episode.",
-    date: "MM/DD/YYYY",
-    spotify: "SPOTIFY_EPISODE_ID",
-    youtube: null
-  },
-  {
-    num: "01",
     title: "Episode Title",
     description: "A short description of what was talked about or cooked during this episode.",
     date: "MM/DD/YYYY",
@@ -44,28 +41,25 @@ const kitchenEpisodes = [
 
 const couchEpisodes = [
   {
-    num: "06",
-    title: "Episode Title",
+    title: "DetachingTo Align In Purpose w/ Unique Starr",
     description: "A short description of the conversation or topic covered in this episode.",
-    date: "MM/DD/YYYY",
-    spotify: "SPOTIFY_EPISODE_ID",
-    youtube: null
-  },
-  {
-    num: "05",
-    title: "Episode Title",
-    description: "A short description of the conversation or topic covered in this episode.",
-    date: "MM/DD/YYYY",
-    spotify: "SPOTIFY_EPISODE_ID",
-    youtube: null
-  },
-  {
-    num: "04",
-    title: "Episode Title",
-    description: "A short description of the conversation or topic covered in this episode.",
-    date: "MM/DD/YYYY",
+    date: "03/20/2026",
     spotify: "SPOTIFY_EPISODE_ID",
     youtube: "_TubobfNp_0"
+  },
+  {
+    title: "Part III: Give Me A Year by Shonda Scott",
+    description: "A short description of the conversation or topic covered in this episode.",
+    date: "01/23/2026",
+    spotify: "SPOTIFY_EPISODE_ID",
+    youtube: "K7h7wnsRCNY"
+  },
+  {
+    title: "Part II: Give Me A Year by Shonda Scott",
+    description: "A short description of the conversation or topic covered in this episode.",
+    date: "MM/DD/YYYY",
+    spotify: "SPOTIFY_EPISODE_ID",
+    youtube: "3ava3d1YsNI"
   }
 ];
 
@@ -84,6 +78,13 @@ const dishes = [
 
 function validId(id) {
   return id && !id.includes("_ID");
+}
+
+const TRUNCATE_LENGTH = 120;
+
+function truncate(text) {
+  if (text.length <= TRUNCATE_LENGTH) return { short: text, isTruncated: false };
+  return { short: text.slice(0, text.lastIndexOf(" ", TRUNCATE_LENGTH)) + "…", isTruncated: true };
 }
 
 function buildCard(ep) {
@@ -111,11 +112,18 @@ function buildCard(ep) {
       ></iframe>`
     : "";
 
+  const { short, isTruncated } = truncate(ep.description);
+  const safeDesc = ep.description.replace(/'/g, "\\'");
+  const safeTitle = ep.title.replace(/'/g, "\\'");
+  const readMore = isTruncated
+    ? `<button class="read-more" onclick="openModal('${safeTitle}', '${ep.date}', '${safeDesc}')">Read more</button>`
+    : "";
+
   return `
     <div class="card">
       <h3>${ep.title}</h3>
-      <p>${ep.description}</p>
-      <div class="ep-meta">Ep. ${ep.num} &bull; ${ep.date}</div>
+      <p>${short}${readMore}</p>
+      <div class="ep-meta">${ep.date}</div>
       ${spotify}
       ${youtube}
     </div>`;
@@ -124,6 +132,25 @@ function buildCard(ep) {
 function buildDishList(dishes) {
   return dishes.map(d => `<li>${d}</li>`).join("\n        ");
 }
+
+function openModal(title, date, description) {
+  document.getElementById("modal-title").textContent = title;
+  document.getElementById("modal-meta").textContent = date;
+  document.getElementById("modal-description").textContent = description;
+  document.getElementById("modal-overlay").classList.add("open");
+}
+
+function closeModal() {
+  document.getElementById("modal-overlay").classList.remove("open");
+}
+
+document.getElementById("modal-close").addEventListener("click", closeModal);
+document.getElementById("modal-overlay").addEventListener("click", function(e) {
+  if (e.target === this) closeModal();
+});
+document.addEventListener("keydown", function(e) {
+  if (e.key === "Escape") closeModal();
+});
 
 document.getElementById("kitchen-grid").innerHTML = kitchenEpisodes.map(buildCard).join("");
 document.getElementById("couch-grid").innerHTML   = couchEpisodes.map(buildCard).join("");

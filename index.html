@@ -14,9 +14,9 @@
   </header>
 
   <nav>
-    <a href="#kitchen">Kitchen Episodes</a>
-    <a href="#couch">Couch Episodes</a>
-    <a href="#dishes">Dishes Cooked</a>
+    <a href="#kitchen">In The Kitchen</a>
+    <a href="#couch">On The Couch</a>
+    <a href="#dishes">Menu</a>
     <a href="#about">About Me</a>
     <a href="#contact">Contact</a>
   </nav>
@@ -35,19 +35,19 @@
 
     <!-- Kitchen Episodes -->
     <section id="kitchen">
-      <h2>Kitchen Episodes</h2>
+      <h2>In The Kitchen</h2>
       <div class="card-grid" id="kitchen-grid"></div>
     </section>
 
     <!-- Couch Episodes -->
     <section id="couch">
-      <h2>Couch Episodes</h2>
+      <h2>On The Couch</h2>
       <div class="card-grid" id="couch-grid"></div>
     </section>
 
     <!-- Dishes Cooked -->
     <section id="dishes">
-      <h2>Dishes Cooked</h2>
+      <h2>Menu</h2>
       <ul class="dish-list" id="dish-list"></ul>
     </section>
 
@@ -86,6 +86,16 @@
   <footer>
     &copy; 2025-2026 The Kitchen Couch Podcast. All rights reserved.
   </footer>
+
+  <!-- Episode detail modal -->
+  <div class="modal-overlay" id="modal-overlay">
+    <div class="modal" id="modal">
+      <button class="modal-close" id="modal-close">&times;</button>
+      <h3 id="modal-title"></h3>
+      <div class="ep-meta" id="modal-meta"></div>
+      <p id="modal-description"></p>
+    </div>
+  </div>
 
   <script src="episodes.js"></script>
 </body>

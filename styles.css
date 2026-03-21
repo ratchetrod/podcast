@@ -235,6 +235,86 @@ footer {
   border-top: 1px solid #e0d8cf;
 }
 
+/* ── Modal ── */
+.modal-overlay {
+  display: none;
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.55);
+  z-index: 100;
+  align-items: center;
+  justify-content: center;
+  padding: 1rem;
+}
+
+.modal-overlay.open {
+  display: flex;
+}
+
+.modal {
+  background: #fdf8f2;
+  border-radius: 8px;
+  max-width: 560px;
+  width: 100%;
+  padding: 2rem;
+  position: relative;
+  max-height: 90vh;
+  overflow-y: auto;
+}
+
+.modal h3 {
+  font-size: 1.2rem;
+  margin-bottom: 0.5rem;
+}
+
+.modal .ep-meta {
+  font-size: 0.8rem;
+  color: #c8a97e;
+  font-family: Arial, sans-serif;
+  font-weight: 600;
+  margin-bottom: 1rem;
+}
+
+.modal p {
+  font-size: 0.95rem;
+  line-height: 1.7;
+  color: #3a3a3a;
+  font-family: Arial, sans-serif;
+}
+
+.modal-close {
+  position: absolute;
+  top: 1rem;
+  right: 1rem;
+  background: none;
+  border: none;
+  font-size: 1.4rem;
+  cursor: pointer;
+  color: #7a6e63;
+  line-height: 1;
+}
+
+.modal-close:hover {
+  color: #2c2c2c;
+}
+
+.read-more {
+  background: none;
+  border: none;
+  color: #c8a97e;
+  font-family: Arial, sans-serif;
+  font-size: 0.82rem;
+  font-weight: 600;
+  cursor: pointer;
+  padding: 0;
+  margin-left: 4px;
+  text-decoration: underline;
+}
+
+.read-more:hover {
+  color: #2c2c2c;
+}
+
 /* ── Responsive ── */
 @media (max-width: 600px) {
   header h1 { font-size: 1.75rem; }
