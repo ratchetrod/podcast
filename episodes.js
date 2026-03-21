@@ -82,6 +82,10 @@ const dishes = [
 //  PAGE BUILDER – no need to edit below this line
 // ─────────────────────────────────────────────
 
+function validId(id) {
+  return id && !id.includes("_ID");
+}
+
 function buildCard(ep) {
   const youtube = validId(ep.youtube)
     ? `<div style="position:relative;padding-bottom:56.25%;height:0;overflow:hidden;margin-top:1rem;">
@@ -94,8 +98,6 @@ function buildCard(ep) {
         ></iframe>
       </div>`
     : "";
-
-  const validId = id => id && !id.includes("_ID");
 
   const spotify = validId(ep.spotify)
     ? `<iframe
