@@ -17,13 +17,15 @@ jobs:
 
       - name: Fetch descriptions from YouTube API
         env:
-          YOUTUBE_API_KEY: ${{ secrets.YOUTUBE_API_KEY }}
+          YOUTUBE_API_KEY:       ${{ secrets.YOUTUBE_API_KEY }}
+          KITCHEN_PLAYLIST_ID:   ${{ secrets.KITCHEN_PLAYLIST_ID }}
+          COUCH_PLAYLIST_ID:     ${{ secrets.COUCH_PLAYLIST_ID }}
         run: node .github/fetch-descriptions.js
 
       - name: Commit descriptions.json
         run: |
           git config user.name "github-actions"
           git config user.email "github-actions@github.com"
-          git add descriptions.json
+          git add descriptions.json episodes.json
           git diff --cached --quiet || git commit -m "Update episode descriptions"
           git push
