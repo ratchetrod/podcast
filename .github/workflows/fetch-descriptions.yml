@@ -1,0 +1,50 @@
+name: Fetch YouTube Descriptions
+
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+jobs:
+  fetch:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Fetch descriptions from YouTube API
+        env:
+          YOUTUBE_API_KEY: ${{ secrets.YOUTUBE_API_KEY }}
+        run: |
+          node -e "
+          const https = require('https');
+          const fs = require('fs');
+
+          // Extract YouTube IDs from episodes.js
+          const src = fs.readFileSync('episodes.js', 'utf8');
+          const ids = [...src.matchAll(/youtube:\s*['\"]([a-zA-Z0-9_-]{11})['\"]/g)]
+            .map(m => m[1]);
+
+          if (!ids.length) { fs.writeFileSync('descriptions.json', '{}'); process.exit(0); }
+
+          const url = 'https://www.googleapis.com/youtube/v3/videos?part=snippet&id=' + ids.join(',') + '&key=' + process.env.YOUTUBE_API_KEY;
+
+          https.get(url, res => {
+            let data = '';
+            res.on('data', chunk => data += chunk);
+            res.on('end', () => {
+              const json = JSON.parse(data);
+              const out = {};
+              json.items.forEach(item => { out[item.id] = item.snippet.description; });
+              fs.writeFileSync('descriptions.json', JSON.stringify(out, null, 2));
+              console.log('Fetched descriptions for:', Object.keys(out));
+            });
+          });
+          "
+
+      - name: Commit descriptions.json
+        run: |
+          git config user.name "github-actions"
+          git config user.email "github-actions@github.com"
+          git add descriptions.json
+          git diff --cached --quiet || git commit -m "Update episode descriptions"
+          git push

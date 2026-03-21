@@ -87,12 +87,8 @@ function truncate(text) {
   return { short: text.slice(0, text.lastIndexOf(" ", TRUNCATE_LENGTH)) + "…", isTruncated: true };
 }
 
-// ─────────────────────────────────────────────
-//  YOUTUBE API KEY
-//  Get one free at: console.cloud.google.com
-//  Enable "YouTube Data API v3" then create an API key
-// ─────────────────────────────────────────────
-const YOUTUBE_API_KEY = "YOUR_API_KEY_HERE";
+// Descriptions are fetched from descriptions.json, which is generated
+// automatically by the GitHub Action on every push. No API key needed here.
 
 // All episodes in one flat list so cards can reference them by index
 const allEpisodes = [...kitchenEpisodes, ...couchEpisodes];
@@ -166,29 +162,18 @@ function closeModal() {
 }
 
 async function fetchYouTubeDescriptions() {
-  if (!YOUTUBE_API_KEY || YOUTUBE_API_KEY === "YOUR_API_KEY_HERE") return;
-
-  const ids = allEpisodes
-    .map((ep, i) => ({ id: ep.youtube, index: i }))
-    .filter(({ id }) => validId(id));
-
-  if (!ids.length) return;
-
-  const videoIds = ids.map(({ id }) => id).join(",");
-  const url = `https://www.googleapis.com/youtube/v3/videos?part=snippet&id=${videoIds}&key=${YOUTUBE_API_KEY}`;
-
   try {
-    const res = await fetch(url);
+    const res = await fetch("descriptions.json");
+    if (!res.ok) return;
     const data = await res.json();
-    data.items.forEach(item => {
-      const match = ids.find(({ id }) => id === item.id);
-      if (match && !allEpisodes[match.index].description) {
-        allEpisodes[match.index].description = item.snippet.description;
-        updateCardDesc(match.index);
+    allEpisodes.forEach((ep, index) => {
+      if (ep.youtube && data[ep.youtube] && !ep.description) {
+        ep.description = data[ep.youtube];
+        updateCardDesc(index);
       }
     });
   } catch (e) {
-    console.warn("Could not fetch YouTube descriptions:", e);
+    console.warn("Could not load descriptions.json:", e);
   }
 }
 
