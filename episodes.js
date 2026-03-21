@@ -116,7 +116,7 @@ function buildCard(ep, index) {
     <div class="card" id="card-${index}">
       <h3>${ep.title}</h3>
       <p class="card-desc">${short}${readMore}</p>
-      <div class="ep-meta">${ep.date}</div>
+      <div class="ep-meta">${ep.date || ""}</div>
       ${spotify}
       ${youtube}
     </div>`;
