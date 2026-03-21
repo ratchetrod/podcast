@@ -24,24 +24,24 @@ const kitchenEpisodes = [
     youtube: "9CoWP2DazGA"
   },
   {
-    title: "Episode Title",
-    description: "A short description of what was talked about or cooked during this episode.",
-    date: "MM/DD/YYYY",
+    title: "The Impact Of Technology On The Youth w/ Unique Starr",
+    description: "In this conversation, Dav Lewis and guest, Unique Starr, discusse her journey through the Harvard Social Impact Initiative, grappling with feelings of shame and identity as he navigates the intersection of elite education and his commitment to his community. They delve into the impact of technology on children, particularly regarding screen addiction, and Unique Starr shares her personal experiences as a parent who has chosen to limit technology for his daughter. The discussion also touches on food choices, cultural identity, and the challenges of cooking and meal prep in a busy life, highlighting the importance of being mindful about what we consume and how it shapes our lives.",
+    date: "03/06/2026",
     spotify: "SPOTIFY_EPISODE_ID",
-    youtube: null
+    youtube: "q3RHFCVmqjE"
   },
   {
-    title: "Episode Title",
-    description: "A short description of what was talked about or cooked during this episode.",
-    date: "MM/DD/YYYY",
+    title: "Justice & Forgiveness",
+    description: "In this episode Dav and special guest, Tatiuana Holland, explore a range of topics including cooking (Oyster Mushrooms + Dirty Rice), Louisiana roots, academic journey, legal career, the psychology of law, fairness in the legal system, collaborative justice, the criminal justice system, forgiveness, and self-healing. The discussion delves into the concept of collaborative justice and the complexities of forgiveness and self-healing.",
+    date: "02/27/2026",
     spotify: "SPOTIFY_EPISODE_ID",
-    youtube: null
+    youtube: "VremHABoPqw"
   }
 ];
 
 const couchEpisodes = [
   {
-    title: "DetachingTo Align In Purpose w/ Unique Starr",
+    title: "Detaching To Align In Purpose w/ Unique Starr",
     description: "A short description of the conversation or topic covered in this episode.",
     date: "03/20/2026",
     spotify: "SPOTIFY_EPISODE_ID",
@@ -87,7 +87,10 @@ function truncate(text) {
   return { short: text.slice(0, text.lastIndexOf(" ", TRUNCATE_LENGTH)) + "…", isTruncated: true };
 }
 
-function buildCard(ep) {
+// All episodes in one flat list so cards can reference them by index
+const allEpisodes = [...kitchenEpisodes, ...couchEpisodes];
+
+function buildCard(ep, index) {
   const youtube = validId(ep.youtube)
     ? `<div style="position:relative;padding-bottom:56.25%;height:0;overflow:hidden;margin-top:1rem;">
         <iframe
@@ -113,10 +116,8 @@ function buildCard(ep) {
     : "";
 
   const { short, isTruncated } = truncate(ep.description);
-  const safeDesc = ep.description.replace(/'/g, "\\'");
-  const safeTitle = ep.title.replace(/'/g, "\\'");
   const readMore = isTruncated
-    ? `<button class="read-more" onclick="openModal('${safeTitle}', '${ep.date}', '${safeDesc}')">Read more</button>`
+    ? `<button class="read-more" data-index="${index}">Read more</button>`
     : "";
 
   return `
@@ -133,10 +134,10 @@ function buildDishList(dishes) {
   return dishes.map(d => `<li>${d}</li>`).join("\n        ");
 }
 
-function openModal(title, date, description) {
-  document.getElementById("modal-title").textContent = title;
-  document.getElementById("modal-meta").textContent = date;
-  document.getElementById("modal-description").textContent = description;
+function openModal(ep) {
+  document.getElementById("modal-title").textContent = ep.title;
+  document.getElementById("modal-meta").textContent = ep.date;
+  document.getElementById("modal-description").textContent = ep.description;
   document.getElementById("modal-overlay").classList.add("open");
 }
 
@@ -151,7 +152,12 @@ document.getElementById("modal-overlay").addEventListener("click", function(e) {
 document.addEventListener("keydown", function(e) {
   if (e.key === "Escape") closeModal();
 });
+document.addEventListener("click", function(e) {
+  if (e.target.classList.contains("read-more")) {
+    openModal(allEpisodes[e.target.dataset.index]);
+  }
+});
 
 document.getElementById("kitchen-grid").innerHTML = kitchenEpisodes.map(buildCard).join("");
-document.getElementById("couch-grid").innerHTML   = couchEpisodes.map(buildCard).join("");
+document.getElementById("couch-grid").innerHTML   = couchEpisodes.map((ep, i) => buildCard(ep, kitchenEpisodes.length + i)).join("");
 document.getElementById("dish-list").innerHTML    = buildDishList(dishes);
