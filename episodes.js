@@ -49,7 +49,7 @@ const couchEpisodes = [
     description: "A short description of the conversation or topic covered in this episode.",
     date: "MM/DD/YYYY",
     spotify: "SPOTIFY_EPISODE_ID",
-    youtube: "YOUTUBE_VIDEO_ID"
+    youtube: null
   },
   {
     num: "05",
@@ -57,7 +57,7 @@ const couchEpisodes = [
     description: "A short description of the conversation or topic covered in this episode.",
     date: "MM/DD/YYYY",
     spotify: "SPOTIFY_EPISODE_ID",
-    youtube: "YOUTUBE_VIDEO_ID"
+    youtube: null
   },
   {
     num: "04",
@@ -65,7 +65,7 @@ const couchEpisodes = [
     description: "A short description of the conversation or topic covered in this episode.",
     date: "MM/DD/YYYY",
     spotify: "SPOTIFY_EPISODE_ID",
-    youtube: "YOUTUBE_VIDEO_ID"
+    youtube: "_TubobfNp_0"
   }
 ];
 
@@ -83,7 +83,7 @@ const dishes = [
 // ─────────────────────────────────────────────
 
 function buildCard(ep) {
-  const youtube = ep.youtube
+  const youtube = validId(ep.youtube)
     ? `<div style="position:relative;padding-bottom:56.25%;height:0;overflow:hidden;margin-top:1rem;">
         <iframe
           src="https://www.youtube.com/embed/${ep.youtube}"
@@ -95,7 +95,9 @@ function buildCard(ep) {
       </div>`
     : "";
 
-  const spotify = ep.spotify
+  const validId = id => id && !id.includes("_ID");
+
+  const spotify = validId(ep.spotify)
     ? `<iframe
         src="https://open.spotify.com/embed/episode/${ep.spotify}"
         width="100%"
