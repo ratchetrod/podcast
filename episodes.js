@@ -121,6 +121,33 @@ function closeModal() {
   document.getElementById("modal-overlay").classList.remove("open");
 }
 
+function initCarousel(trackEl, dotsEl) {
+  let current = 0;
+  const total = trackEl.children.length;
+  if (total === 0) return;
+
+  // Build dots
+  for (let i = 0; i < total; i++) {
+    const dot = document.createElement("button");
+    dot.className = "dot" + (i === 0 ? " active" : "");
+    dot.setAttribute("aria-label", `Episode ${i + 1}`);
+    dot.addEventListener("click", () => goTo(i));
+    dotsEl.appendChild(dot);
+  }
+
+  function goTo(index) {
+    current = (index + total) % total;
+    trackEl.style.transform = `translateX(-${current * 100}%)`;
+    dotsEl.querySelectorAll(".dot").forEach((d, i) => {
+      d.classList.toggle("active", i === current);
+    });
+  }
+
+  const carousel = trackEl.closest(".carousel");
+  carousel.querySelector(".prev-btn").addEventListener("click", () => goTo(current - 1));
+  carousel.querySelector(".next-btn").addEventListener("click", () => goTo(current + 1));
+}
+
 async function loadEpisodes() {
   try {
     const res = await fetch("episodes.json");
@@ -145,9 +172,15 @@ async function loadEpisodes() {
   allEpisodes.length = 0;
   allEpisodes.push(...kitchenEpisodes, ...couchEpisodes);
 
-  document.getElementById("kitchen-grid").innerHTML = kitchenEpisodes.map(buildCard).join("");
-  document.getElementById("couch-grid").innerHTML   = couchEpisodes.map((ep, i) => buildCard(ep, kitchenEpisodes.length + i)).join("");
-  document.getElementById("dish-list").innerHTML    = buildDishList(dishes);
+  const kitchenTrack = document.getElementById("kitchen-track");
+  const couchTrack   = document.getElementById("couch-track");
+
+  kitchenTrack.innerHTML = kitchenEpisodes.map(buildCard).join("");
+  couchTrack.innerHTML   = couchEpisodes.map((ep, i) => buildCard(ep, kitchenEpisodes.length + i)).join("");
+  document.getElementById("dish-list").innerHTML = buildDishList(dishes);
+
+  initCarousel(kitchenTrack, document.getElementById("kitchen-dots"));
+  initCarousel(couchTrack,   document.getElementById("couch-dots"));
 }
 
 document.getElementById("modal-close").addEventListener("click", closeModal);

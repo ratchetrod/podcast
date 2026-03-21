@@ -111,27 +111,83 @@ section h2 {
   margin-bottom: 1.25rem;
 }
 
-/* ── Episode Cards ── */
-.card-grid {
-  display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
-  gap: 1.25rem;
+/* ── Carousel ── */
+.carousel {
+  position: relative;
+  padding: 0 3rem;
 }
 
+.carousel-viewport {
+  overflow: hidden;
+  border-radius: 6px;
+}
+
+.carousel-track {
+  display: flex;
+  transition: transform 0.4s ease;
+}
+
+.carousel-btn {
+  position: absolute;
+  top: 40%;
+  transform: translateY(-50%);
+  background: #c8a97e;
+  border: none;
+  color: #fff;
+  font-size: 2rem;
+  width: 2.5rem;
+  height: 2.5rem;
+  border-radius: 50%;
+  cursor: pointer;
+  z-index: 1;
+  line-height: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: background 0.2s;
+}
+
+.carousel-btn:hover {
+  background: #2c2c2c;
+}
+
+.prev-btn { left: 0; }
+.next-btn { right: 0; }
+
+.carousel-dots {
+  display: flex;
+  justify-content: center;
+  gap: 0.5rem;
+  margin-top: 1rem;
+}
+
+.dot {
+  width: 9px;
+  height: 9px;
+  border-radius: 50%;
+  background: #d0c8be;
+  cursor: pointer;
+  border: none;
+  padding: 0;
+  transition: background 0.2s;
+}
+
+.dot.active {
+  background: #c8a97e;
+}
+
+/* ── Episode Cards ── */
 .card {
+  min-width: 100%;
   background: #fff;
   border: 1px solid #e0d8cf;
   border-radius: 6px;
-  padding: 1.25rem;
-  transition: box-shadow 0.2s;
-}
-
-.card:hover {
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+  padding: 1.5rem;
+  box-sizing: border-box;
 }
 
 .card h3 {
-  font-size: 1rem;
+  font-size: 1.05rem;
   margin-bottom: 0.5rem;
 }
 
@@ -143,7 +199,7 @@ section h2 {
 }
 
 .card .ep-meta {
-  margin-top: 0.75rem;
+  margin-top: 0.5rem;
   font-size: 0.78rem;
   color: #c8a97e;
   font-family: Arial, sans-serif;
