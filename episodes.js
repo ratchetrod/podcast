@@ -126,18 +126,24 @@ function initCarousel(trackEl, dotsEl) {
   const total = trackEl.children.length;
   if (total === 0) return;
 
-  // Build dots
-  for (let i = 0; i < total; i++) {
+  const VISIBLE  = 3;
+  const maxIndex = Math.max(0, total - VISIBLE);
+  const dotCount = maxIndex + 1;
+
+  // Build dots (one per reachable position)
+  for (let i = 0; i < dotCount; i++) {
     const dot = document.createElement("button");
     dot.className = "dot" + (i === 0 ? " active" : "");
-    dot.setAttribute("aria-label", `Episode ${i + 1}`);
+    dot.setAttribute("aria-label", `Slide ${i + 1}`);
     dot.addEventListener("click", () => goTo(i));
     dotsEl.appendChild(dot);
   }
 
   function goTo(index) {
-    current = (index + total) % total;
-    trackEl.style.transform = `translateX(-${current * 100}%)`;
+    current = Math.max(0, Math.min(index, maxIndex));
+    // offsetLeft gives exact px distance from track start — handles gap automatically
+    const offset = trackEl.children[current].offsetLeft;
+    trackEl.style.transform = `translateX(-${offset}px)`;
     dotsEl.querySelectorAll(".dot").forEach((d, i) => {
       d.classList.toggle("active", i === current);
     });
