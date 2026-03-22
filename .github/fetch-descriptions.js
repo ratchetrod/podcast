@@ -27,7 +27,7 @@ function get(url) {
 
 function formatDate(iso) {
   const d = new Date(iso);
-  return `${String(d.getMonth() + 1).padStart(2, "0")}/${String(d.getDate()).padStart(2, "0")}/${d.getFullYear()}`;
+  return d.toLocaleDateString("en-US", { year: "numeric", month: "long", day: "numeric", timeZone: "UTC" });
 }
 
 // Fetch all video IDs from a playlist (all pages)
