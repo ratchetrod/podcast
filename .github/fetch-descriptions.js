@@ -30,9 +30,9 @@ function formatDate(iso) {
   return `${String(d.getMonth() + 1).padStart(2, "0")}/${String(d.getDate()).padStart(2, "0")}/${d.getFullYear()}`;
 }
 
-// Fetch all pages of a playlist
-async function fetchPlaylist(playlistId) {
-  const episodes = [];
+// Fetch all video IDs from a playlist (all pages)
+async function fetchPlaylistIds(playlistId) {
+  const items = [];
   let pageToken = "";
 
   do {
@@ -46,40 +46,76 @@ async function fetchPlaylist(playlistId) {
 
     if (json.error) {
       console.error(`YouTube API error for playlist ${playlistId}:`, json.error.message);
-      return episodes;
+      return items;
     }
 
     for (const item of json.items) {
       const s = item.snippet;
-      // skip deleted / private videos
       if (!s.resourceId || s.title === "Deleted video" || s.title === "Private video") continue;
-
-      episodes.push({
-        title:       s.title,
-        youtube:     s.resourceId.videoId,
-        description: s.description,
-        date:        formatDate(s.publishedAt),
-        spotify:     null   // filled in manually via spotifyIds in episodes.js
-      });
+      items.push({ title: s.title, youtube: s.resourceId.videoId });
     }
 
     pageToken = json.nextPageToken || "";
   } while (pageToken);
 
-  return episodes;
+  return items;
+}
+
+// Fetch actual publish dates + descriptions from videos.list (max 50 per call)
+async function fetchVideoDetails(videoIds) {
+  const details = {};
+
+  // Videos API accepts up to 50 IDs at a time
+  for (let i = 0; i < videoIds.length; i += 50) {
+    const batch = videoIds.slice(i, i + 50).join(",");
+    const url =
+      `https://www.googleapis.com/youtube/v3/videos` +
+      `?part=snippet&id=${batch}&key=${API_KEY}`;
+
+    const json = await get(url);
+
+    if (json.error) {
+      console.error("YouTube videos API error:", json.error.message);
+      continue;
+    }
+
+    for (const item of json.items) {
+      details[item.id] = {
+        description: item.snippet.description || "",
+        date:        formatDate(item.snippet.publishedAt)
+      };
+    }
+  }
+
+  return details;
+}
+
+// Combine playlist order with real video metadata
+async function fetchPlaylist(playlistId) {
+  const items = await fetchPlaylistIds(playlistId);
+  if (!items.length) return [];
+
+  const ids     = items.map(i => i.youtube);
+  const details = await fetchVideoDetails(ids);
+
+  return items.map(item => ({
+    title:       item.title,
+    youtube:     item.youtube,
+    description: details[item.youtube]?.description || "",
+    date:        details[item.youtube]?.date        || "",
+    spotify:     null
+  }));
 }
 
 // ─── main ─────────────────────────────────────────────────────────────────────
 
 (async () => {
-  // Load existing episodes.json to preserve any manually added Spotify IDs
   let existing = { kitchen: [], couch: [] };
   if (fs.existsSync("episodes.json")) {
     try { existing = JSON.parse(fs.readFileSync("episodes.json", "utf8")); }
     catch (_) {}
   }
 
-  // Build a map of YouTube ID → Spotify ID from whatever was saved before
   const spotifyMap = {};
   [...existing.kitchen, ...existing.couch].forEach(ep => {
     if (ep.youtube && ep.spotify) spotifyMap[ep.youtube] = ep.spotify;
