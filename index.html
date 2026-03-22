@@ -8,27 +8,36 @@
 </head>
 <body>
 
-  <header>
-    <h1>The Kitchen Couch Podcast</h1>
-    <p>Feeding the soul, one conversation at a time</p>
-  </header>
+  <!-- Hero -->
+  <div class="hero">
+    <nav class="hero-nav">
+      <img src="assets/logo.png" alt="The Kitchen Couch" class="hero-nav-logo-img" onerror="this.style.display='none';this.nextElementSibling.style.display='inline'" />
+      <span class="hero-nav-logo" style="display:none">The Kitchen Couch</span>
+      <div class="hero-nav-links">
+        <a href="#kitchen">In The Kitchen</a>
+        <a href="#couch">On The Couch</a>
+        <a href="#dishes">Menu</a>
+        <a href="#about">About Me</a>
+        <a href="#contact">Contact</a>
+      </div>
+    </nav>
 
-  <nav>
-    <a href="#kitchen">In The Kitchen</a>
-    <a href="#couch">On The Couch</a>
-    <a href="#dishes">Menu</a>
-    <a href="#about">About Me</a>
-    <a href="#contact">Contact</a>
-  </nav>
-
-  <!-- Profile / Hero -->
-  <div class="profile">
-    <div class="profile-photo">
-      <img src="photo.jpg" alt="Host photo" />
-      <!-- placeholder shown when image is missing -->
-      Your photo here
+    <div class="hero-body">
+      <div class="hero-text">
+        <p class="hero-eyebrow">The Podcast</p>
+        <h1 class="hero-title">Food, stories&nbsp;&amp; real&nbsp;talk</h1>
+        <p class="hero-tagline">
+          Feeding the soul, one conversation at a time. Pull up a stool,
+          pour something warm, and let's get into it.
+        </p>
+        <a href="#kitchen" class="hero-cta">Listen Now</a>
+      </div>
+      <div class="hero-photo-wrap">
+        <img src="assets/photo.jpg" alt="Host in the kitchen" class="hero-photo" />
+        <!-- placeholder shown when image is missing -->
+        <div class="hero-photo-placeholder">Your photo here<br><span>Best with apron &amp; food prep shot</span></div>
+      </div>
     </div>
-    <p class="profile-tagline">Your tagline goes here.</p>
   </div>
 
   <main>
