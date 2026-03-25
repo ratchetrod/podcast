@@ -27,6 +27,23 @@ const dishes = [
 //  You do not need to edit anything below this line.
 // ─────────────────────────────────────────────
 
+// Sample episodes shown when episodes.json is not available
+const sampleKitchenEpisodes = [
+  { title: "Jerk Chicken & Life Lessons", description: "Breaking down the perfect jerk marinade while we talk about what it means to cook with intention and purpose.", date: "March 15, 2026" },
+  { title: "Oxtail Sundays", description: "Low and slow oxtail stew — the kind your grandma made. We're getting into family traditions and why food is the ultimate love language.", date: "March 8, 2026" },
+  { title: "The Perfect Curry Goat", description: "Curry goat done right, from seasoning to slow cook. Plus a real conversation about patience in the kitchen and in life.", date: "March 1, 2026" },
+  { title: "Mac & Cheese Wars", description: "Baked vs stovetop — we're settling this once and for all. Every family has their version, and we're tasting through the debate.", date: "February 22, 2026" },
+  { title: "Plantain Everything", description: "Fried, boiled, mashed — we're doing it all. Exploring how one ingredient connects so many Caribbean and African dishes.", date: "February 15, 2026" },
+];
+
+const sampleCouchEpisodes = [
+  { title: "Starting Over at 30", description: "What happens when the plan doesn't work out? We sit down with a guest who quit corporate to follow their passion.", date: "March 12, 2026" },
+  { title: "Fatherhood & Fried Fish", description: "A real talk about being a present dad, the pressures men face, and why the kitchen became a place of healing.", date: "March 5, 2026" },
+  { title: "Mental Health in the Culture", description: "Breaking the stigma — an honest conversation about therapy, vulnerability, and what it takes to actually ask for help.", date: "February 26, 2026" },
+  { title: "Hustling vs. Living", description: "Grind culture told us to never stop. But at what cost? We're unpacking burnout, boundaries, and finding balance.", date: "February 19, 2026" },
+  { title: "Community Over Competition", description: "Why building together beats building alone. Stories from entrepreneurs who chose collaboration over the solo path.", date: "February 12, 2026" },
+];
+
 let kitchenEpisodes = [];
 let couchEpisodes   = [];
 
@@ -54,10 +71,9 @@ const allEpisodes = [];
 
 function buildCard(ep, index) {
   const youtube = validId(ep.youtube)
-    ? `<div style="position:relative;padding-bottom:56.25%;height:0;overflow:hidden;margin-top:1rem;">
+    ? `<div class="card-video">
         <iframe
           src="https://www.youtube.com/embed/${ep.youtube}"
-          style="position:absolute;top:0;left:0;width:100%;height:100%;"
           frameborder="0"
           allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
           allowfullscreen
@@ -67,13 +83,13 @@ function buildCard(ep, index) {
 
   const spotify = validId(ep.spotify)
     ? `<iframe
+        class="card-spotify"
         src="https://open.spotify.com/embed/episode/${ep.spotify}"
         width="100%"
-        height="152"
+        height="80"
         frameborder="0"
         allowtransparency="true"
         allow="encrypted-media"
-        style="margin-top:1rem;border-radius:4px;"
       ></iframe>`
     : "";
 
@@ -126,32 +142,66 @@ function initCarousel(trackEl, dotsEl) {
   const total = trackEl.children.length;
   if (total === 0) return;
 
-  const VISIBLE  = 3;
-  const maxIndex = Math.max(0, total - VISIBLE);
-  const dotCount = maxIndex + 1;
+  const carousel = trackEl.closest(".carousel");
+  const prevBtn = carousel.querySelector(".prev-btn");
+  const nextBtn = carousel.querySelector(".next-btn");
 
-  // Build dots (one per reachable position)
-  for (let i = 0; i < dotCount; i++) {
-    const dot = document.createElement("button");
-    dot.className = "dot" + (i === 0 ? " active" : "");
-    dot.setAttribute("aria-label", `Slide ${i + 1}`);
-    dot.addEventListener("click", () => goTo(i));
-    dotsEl.appendChild(dot);
+  // Determine how many cards are visible based on viewport width
+  function getVisible() {
+    if (window.innerWidth <= 600) return 1;
+    if (window.innerWidth <= 800) return 2;
+    if (window.innerWidth <= 1000) return 3;
+    if (window.innerWidth <= 1200) return 4;
+    return 5;
+  }
+
+  function getMaxIndex() {
+    return Math.max(0, total - getVisible());
+  }
+
+  function buildDots() {
+    dotsEl.innerHTML = "";
+    const maxIdx = getMaxIndex();
+    const dotCount = maxIdx + 1;
+    for (let i = 0; i < dotCount; i++) {
+      const dot = document.createElement("button");
+      dot.className = "dot" + (i === current ? " active" : "");
+      dot.setAttribute("aria-label", `Slide ${i + 1}`);
+      dot.addEventListener("click", () => goTo(i));
+      dotsEl.appendChild(dot);
+    }
   }
 
   function goTo(index) {
-    current = Math.max(0, Math.min(index, maxIndex));
-    // offsetLeft gives exact px distance from track start — handles gap automatically
+    const maxIdx = getMaxIndex();
+    current = Math.max(0, Math.min(index, maxIdx));
     const offset = trackEl.children[current].offsetLeft;
     trackEl.style.transform = `translateX(-${offset}px)`;
     dotsEl.querySelectorAll(".dot").forEach((d, i) => {
       d.classList.toggle("active", i === current);
     });
+    prevBtn.disabled = current === 0;
+    nextBtn.disabled = current === maxIdx;
   }
 
-  const carousel = trackEl.closest(".carousel");
-  carousel.querySelector(".prev-btn").addEventListener("click", () => goTo(current - 1));
-  carousel.querySelector(".next-btn").addEventListener("click", () => goTo(current + 1));
+  prevBtn.addEventListener("click", () => goTo(current - 1));
+  nextBtn.addEventListener("click", () => goTo(current + 1));
+
+  // Keyboard navigation on the carousel
+  carousel.setAttribute("tabindex", "0");
+  carousel.addEventListener("keydown", (e) => {
+    if (e.key === "ArrowLeft") { goTo(current - 1); e.preventDefault(); }
+    if (e.key === "ArrowRight") { goTo(current + 1); e.preventDefault(); }
+  });
+
+  buildDots();
+  goTo(0);
+
+  // Rebuild dots on resize so visible count stays accurate
+  window.addEventListener("resize", () => {
+    buildDots();
+    goTo(current);
+  });
 }
 
 async function loadEpisodes() {
@@ -171,8 +221,12 @@ async function loadEpisodes() {
     });
 
   } catch (e) {
-    console.warn("Could not load episodes.json — page may be empty.", e);
+    console.warn("Could not load episodes.json — using sample episodes.", e);
   }
+
+  // Fall back to sample episodes when none are loaded
+  if (kitchenEpisodes.length === 0) kitchenEpisodes = sampleKitchenEpisodes;
+  if (couchEpisodes.length === 0)   couchEpisodes   = sampleCouchEpisodes;
 
   // Rebuild allEpisodes and render
   allEpisodes.length = 0;
@@ -181,9 +235,10 @@ async function loadEpisodes() {
   const kitchenTrack = document.getElementById("kitchen-track");
   const couchTrack   = document.getElementById("couch-track");
 
-  kitchenTrack.innerHTML = kitchenEpisodes.map(buildCard).join("");
+  kitchenTrack.innerHTML = kitchenEpisodes.map((ep, i) => buildCard(ep, i)).join("");
   couchTrack.innerHTML   = couchEpisodes.map((ep, i) => buildCard(ep, kitchenEpisodes.length + i)).join("");
-  document.getElementById("dish-list").innerHTML = buildDishList(dishes);
+  const dishListEl = document.getElementById("dish-list");
+  if (dishListEl) dishListEl.innerHTML = buildDishList(dishes);
 
   initCarousel(kitchenTrack, document.getElementById("kitchen-dots"));
   initCarousel(couchTrack,   document.getElementById("couch-dots"));

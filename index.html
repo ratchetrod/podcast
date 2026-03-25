@@ -12,28 +12,31 @@
   <div class="hero">
     <nav class="hero-nav">
       <img src="assets/logo.png" alt="The Kitchen Couch" class="hero-nav-logo-img" onerror="this.style.display='none';this.nextElementSibling.style.display='inline'" />
-      <span class="hero-nav-logo" style="display:none">The Kitchen Couch</span>
+      <span class="hero-nav-logo" style="display:none">The Kitchen Couch Podcast</span>
       <div class="hero-nav-links">
-        <a href="#kitchen">In The Kitchen</a>
+        <!-- <a href="#kitchen">In The Kitchen</a>
         <a href="#couch">On The Couch</a>
         <a href="#dishes">Menu</a>
-        <a href="#about">About Me</a>
-        <a href="#contact">Contact</a>
+        <a href="#about">About Me</a> -->
+        <!-- <a href="contact.html">Contact</a> -->
       </div>
     </nav>
 
     <div class="hero-body">
       <div class="hero-text">
-        <p class="hero-eyebrow">The Podcast</p>
-        <h1 class="hero-title">Food, stories&nbsp;&amp; real&nbsp;talk</h1>
-        <p class="hero-tagline">
+        <img src="assets/full-logo.jpg" alt="The Kitchen Couch Podcast" class="hero-logo" />
+        <h2 class="hero-title">Feeding The Soul, One Conversation At A Time</h2>
+        <!-- <p class="hero-tagline">
           Feeding the soul, one conversation at a time. Pull up a stool,
           pour something warm, and let's get into it.
-        </p>
-        <a href="#kitchen" class="hero-cta">Listen Now</a>
+        </p> -->
+        <div class="hero-cta-row">
+          <a href="https://open.spotify.com/show/66Cufz1oHNaGAzy8vrdldo" class="hero-cta">Listen on Spotify</a>
+          <a href="https://www.youtube.com/@TheKitchenCouchPodcast/videos" class="hero-cta">Watch on YouTube</a>
+        </div>
       </div>
       <div class="hero-photo-wrap">
-        <img src="assets/photo.jpg" alt="Host in the kitchen" class="hero-photo" />
+        <img src="assets/dav-bg.jpg" alt="Host in the kitchen" class="hero-photo" />
         <!-- placeholder shown when image is missing -->
         <div class="hero-photo-placeholder">Your photo here<br><span>Best with apron &amp; food prep shot</span></div>
       </div>
@@ -43,38 +46,48 @@
   <main>
 
     <!-- Kitchen Episodes -->
-    <section id="kitchen">
-      <h2>In The Kitchen</h2>
-      <div class="carousel" id="kitchen-carousel">
-        <button class="carousel-btn prev-btn" aria-label="Previous">&#8249;</button>
-        <div class="carousel-viewport">
-          <div class="carousel-track" id="kitchen-track"></div>
+    <section id="kitchen" class="full-section section-dark">
+      <div class="section-inner">
+        <div class="section-header">
+          <h2>In The Kitchen</h2>
+          <p class="section-subtitle">Where the recipes come alive — cooking, plating, and keeping it real.</p>
         </div>
-        <button class="carousel-btn next-btn" aria-label="Next">&#8250;</button>
-        <div class="carousel-dots" id="kitchen-dots"></div>
+        <div class="carousel" id="kitchen-carousel">
+          <button class="carousel-btn prev-btn" aria-label="Previous">&#8249;</button>
+          <div class="carousel-viewport">
+            <div class="carousel-track" id="kitchen-track"></div>
+          </div>
+          <button class="carousel-btn next-btn" aria-label="Next">&#8250;</button>
+          <div class="carousel-dots" id="kitchen-dots"></div>
+        </div>
       </div>
     </section>
 
     <!-- Couch Episodes -->
-    <section id="couch">
-      <h2>On The Couch</h2>
-      <div class="carousel" id="couch-carousel">
-        <button class="carousel-btn prev-btn" aria-label="Previous">&#8249;</button>
-        <div class="carousel-viewport">
-          <div class="carousel-track" id="couch-track"></div>
+    <section id="couch" class="full-section">
+      <div class="section-inner">
+        <div class="section-header">
+          <h2>On The Couch</h2>
+          <p class="section-subtitle">The conversations that feed the soul — unfiltered.</p>
         </div>
-        <button class="carousel-btn next-btn" aria-label="Next">&#8250;</button>
-        <div class="carousel-dots" id="couch-dots"></div>
+        <div class="carousel" id="couch-carousel">
+          <button class="carousel-btn prev-btn" aria-label="Previous">&#8249;</button>
+          <div class="carousel-viewport">
+            <div class="carousel-track" id="couch-track"></div>
+          </div>
+          <button class="carousel-btn next-btn" aria-label="Next">&#8250;</button>
+          <div class="carousel-dots" id="couch-dots"></div>
+        </div>
       </div>
     </section>
 
-    <!-- Dishes Cooked -->
+    <!-- Dishes Cooked
     <section id="dishes">
       <h2>Menu</h2>
       <ul class="dish-list" id="dish-list"></ul>
-    </section>
+    </section> -->
 
-    <!-- About Me -->
+    <!-- About Me
     <section id="about">
       <h2>About Me</h2>
       <p>
@@ -82,27 +95,7 @@
         and what listeners can expect. This is the place to connect with your audience on a
         personal level.
       </p>
-    </section>
-
-    <!-- Contact -->
-    <section id="contact">
-      <h2>Contact</h2>
-      <form>
-        <div>
-          <label for="name">Name</label>
-          <input type="text" id="name" name="name" placeholder="Your name" />
-        </div>
-        <div>
-          <label for="email">Email</label>
-          <input type="email" id="email" name="email" placeholder="you@example.com" />
-        </div>
-        <div>
-          <label for="message">Message</label>
-          <textarea id="message" name="message" placeholder="Say hello..."></textarea>
-        </div>
-        <button type="submit">Send Message</button>
-      </form>
-    </section>
+    </section> -->
 
   </main>
 
