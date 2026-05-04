@@ -7,52 +7,107 @@
   <link rel="stylesheet" href="styles.css" />
 </head>
 <body>
+  <div class="site-shell">
+    <header class="hero">
+      <div class="hero-aurora hero-aurora-left"></div>
+      <div class="hero-aurora hero-aurora-right"></div>
+      <div class="hero-grid"></div>
 
-  <!-- Hero -->
-  <div class="hero">
-    <nav class="hero-nav">
-      <img src="assets/logo.png" alt="The Kitchen Couch" class="hero-nav-logo-img" onerror="this.style.display='none';this.nextElementSibling.style.display='inline'" />
-      <span class="hero-nav-logo" style="display:none">The Kitchen Couch Podcast</span>
-      <div class="hero-nav-links">
-        <!-- <a href="#kitchen">In The Kitchen</a>
-        <a href="#couch">On The Couch</a>
-        <a href="#dishes">Menu</a>
-        <a href="#about">About Me</a> -->
-        <!-- <a href="contact.html">Contact</a> -->
-      </div>
-    </nav>
+      <nav class="hero-nav">
+        <a href="#top" class="hero-brand" aria-label="The Kitchen Couch Podcast home">
+          <img src="assets/logo.png" alt="The Kitchen Couch Podcast logo" class="hero-nav-logo-img" />
+          <span class="hero-brand-text">The Kitchen Couch Podcast</span>
+        </a>
+        <div class="hero-nav-links">
+          <a href="#kitchen">In The Kitchen</a>
+          <a href="#couch">On The Couch</a>
+        </div>
+      </nav>
 
-    <div class="hero-body">
-      <div class="hero-text">
-        <img src="assets/full-logo.jpg" alt="The Kitchen Couch Podcast" class="hero-logo" />
-        <h2 class="hero-title">Feeding The Soul, One Conversation At A Time</h2>
-        <!-- <p class="hero-tagline">
-          Feeding the soul, one conversation at a time. Pull up a stool,
-          pour something warm, and let's get into it.
-        </p> -->
-        <div class="hero-cta-row">
-          <a href="https://open.spotify.com/show/66Cufz1oHNaGAzy8vrdldo" class="hero-cta">Listen on Spotify</a>
-          <a href="https://www.youtube.com/@TheKitchenCouchPodcast/videos" class="hero-cta">Watch on YouTube</a>
+      <div class="hero-body" id="top">
+        <div class="hero-text reveal">
+          <img src="assets/logo-nobg-tight.png" alt="The Kitchen Couch Podcast logo" class="hero-logo-mark" />
+          <h1 class="hero-title">
+            <span class="hero-title-line">Feeding The Soul,</span>
+            <span class="hero-title-line">One Conversation</span>
+            <span class="hero-title-line">At A Time</span>
+          </h1>
+
+          <div class="hero-cta-row">
+            <a href="https://open.spotify.com/show/66Cufz1oHNaGAzy8vrdldo" class="hero-cta hero-cta-primary">Listen on Spotify</a>
+            <a href="https://www.youtube.com/@TheKitchenCouchPodcast/videos" class="hero-cta hero-cta-secondary">Watch on YouTube</a>
+          </div>
+        </div>
+
+        <div class="hero-stage reveal">
+          <div class="hero-photo-card hero-slideshow" data-hero-slideshow>
+            <div class="hero-slides">
+              <figure class="hero-slide is-active">
+                <img src="assets/dav-bg.jpg" alt="Host preparing food in the kitchen" class="hero-photo hero-photo-frame-default" loading="eager" />
+              </figure>
+              <figure class="hero-slide">
+                <img src="assets/hero-slide-02-live-promo.jpg" alt="Special edition Kitchen Couch live promo" class="hero-photo hero-photo-frame-poster" loading="lazy" />
+              </figure>
+              <figure class="hero-slide">
+                <img src="assets/hero-slide-03-podcast-couch.jpeg" alt="Podcast recording on the couch with a guest" class="hero-photo hero-photo-frame-landscape" loading="lazy" />
+              </figure>
+              <figure class="hero-slide">
+                <img src="assets/hero-slide-04-guest-dining.jpeg" alt="Guest enjoying a meal at the table" class="hero-photo hero-photo-frame-portrait" loading="lazy" />
+              </figure>
+              <figure class="hero-slide">
+                <img src="assets/hero-slide-05-dj-session.jpeg" alt="Host working the audio setup" class="hero-photo hero-photo-frame-landscape" loading="lazy" />
+              </figure>
+              <figure class="hero-slide">
+                <img src="assets/hero-slide-06-couch-conversation.jpeg" alt="Host in conversation with a guest on the couch" class="hero-photo hero-photo-frame-portrait" loading="lazy" />
+              </figure>
+              <figure class="hero-slide">
+                <img src="assets/hero-slide-07-food-bowl.jpeg" alt="A plated food close-up from the kitchen side of the show" class="hero-photo hero-photo-frame-food" loading="lazy" />
+              </figure>
+              <figure class="hero-slide">
+                <img src="assets/hero-slide-11-food-nachos.jpg" alt="Loaded nachos plated for the kitchen side of the show" class="hero-photo hero-photo-frame-food" loading="lazy" />
+              </figure>
+              <figure class="hero-slide">
+                <img src="assets/hero-slide-12-food-neon-plate.jpg" alt="A plated meal set in front of a neon bar sign" class="hero-photo hero-photo-frame-food" loading="lazy" />
+              </figure>
+              <figure class="hero-slide">
+                <img src="assets/hero-slide-13-food-fork-plate.jpg" alt="A plated meal held up with a fork during tasting" class="hero-photo hero-photo-frame-food" loading="lazy" />
+              </figure>
+              <figure class="hero-slide">
+                <img src="assets/hero-slide-08-host-guest-portrait.jpeg" alt="Host posing with a guest" class="hero-photo hero-photo-frame-portrait" loading="lazy" />
+              </figure>
+              <figure class="hero-slide">
+                <img src="assets/hero-slide-09-host-guest-white.jpeg" alt="Host posing with a guest in white" class="hero-photo hero-photo-frame-portrait" loading="lazy" />
+              </figure>
+              <figure class="hero-slide">
+                <img src="assets/hero-slide-10-couch-duo.jpeg" alt="Two-person podcast conversation on the couch" class="hero-photo hero-photo-frame-landscape" loading="lazy" />
+              </figure>
+            </div>
+            <button class="hero-slideshow-arrow hero-slideshow-arrow-prev" type="button" aria-label="Previous hero photo">
+              <span aria-hidden="true">&#8249;</span>
+            </button>
+            <button class="hero-slideshow-arrow hero-slideshow-arrow-next" type="button" aria-label="Next hero photo">
+              <span aria-hidden="true">&#8250;</span>
+            </button>
+            <div class="hero-slideshow-counter" aria-live="polite">
+              <span class="hero-slideshow-current">1</span>
+              <span class="hero-slideshow-counter-sep">/</span>
+              <span class="hero-slideshow-total">1</span>
+            </div>
+            <div class="hero-slideshow-dots" role="tablist" aria-label="Featured host photos"></div>
+          </div>
         </div>
       </div>
-      <div class="hero-photo-wrap">
-        <img src="assets/dav-bg.jpg" alt="Host in the kitchen" class="hero-photo" />
-        <!-- placeholder shown when image is missing -->
-        <div class="hero-photo-placeholder">Your photo here<br><span>Best with apron &amp; food prep shot</span></div>
-      </div>
-    </div>
-  </div>
 
-  <main>
+    </header>
 
-    <!-- Kitchen Episodes -->
-    <section id="kitchen" class="full-section section-dark">
-      <div class="section-inner">
+    <main class="immersive-main">
+      <section id="kitchen" class="showcase-section reveal">
         <div class="section-header">
+          <p class="section-kicker">Feed the soul</p>
           <h2>In The Kitchen</h2>
-          <p class="section-subtitle">Where the recipes come alive — cooking, plating, and keeping it real.</p>
+          <p class="section-subtitle">Where the recipes come alive.</p>
         </div>
-        <div class="carousel" id="kitchen-carousel">
+        <div class="carousel glass-carousel" id="kitchen-carousel">
           <button class="carousel-btn prev-btn" aria-label="Previous">&#8249;</button>
           <div class="carousel-viewport">
             <div class="carousel-track" id="kitchen-track"></div>
@@ -60,17 +115,15 @@
           <button class="carousel-btn next-btn" aria-label="Next">&#8250;</button>
           <div class="carousel-dots" id="kitchen-dots"></div>
         </div>
-      </div>
-    </section>
+      </section>
 
-    <!-- Couch Episodes -->
-    <section id="couch" class="full-section">
-      <div class="section-inner">
+      <section id="couch" class="showcase-section showcase-section-couch reveal">
         <div class="section-header">
+          <p class="section-kicker">Feed the mind</p>
           <h2>On The Couch</h2>
-          <p class="section-subtitle">The conversations that feed the soul — unfiltered.</p>
+          <p class="section-subtitle">Conversations that feed the soul.</p>
         </div>
-        <div class="carousel" id="couch-carousel">
+        <div class="carousel glass-carousel" id="couch-carousel">
           <button class="carousel-btn prev-btn" aria-label="Previous">&#8249;</button>
           <div class="carousel-viewport">
             <div class="carousel-track" id="couch-track"></div>
@@ -78,35 +131,18 @@
           <button class="carousel-btn next-btn" aria-label="Next">&#8250;</button>
           <div class="carousel-dots" id="couch-dots"></div>
         </div>
-      </div>
-    </section>
+      </section>
 
-    <!-- Dishes Cooked
-    <section id="dishes">
-      <h2>Menu</h2>
-      <ul class="dish-list" id="dish-list"></ul>
-    </section> -->
+    </main>
 
-    <!-- About Me
-    <section id="about">
-      <h2>About Me</h2>
-      <p>
-        Tell your story here — who you are, why you started the podcast, what you love to cook,
-        and what listeners can expect. This is the place to connect with your audience on a
-        personal level.
-      </p>
-    </section> -->
+    <footer>
+      &copy; 2025-2026 The Kitchen Couch Podcast. All rights reserved.
+    </footer>
+  </div>
 
-  </main>
-
-  <footer>
-    &copy; 2025-2026 The Kitchen Couch Podcast. All rights reserved.
-  </footer>
-
-  <!-- Episode detail modal -->
   <div class="modal-overlay" id="modal-overlay">
     <div class="modal" id="modal">
-      <button class="modal-close" id="modal-close">&times;</button>
+      <button class="modal-close" id="modal-close" aria-label="Close details">&times;</button>
       <h3 id="modal-title"></h3>
       <div class="ep-meta" id="modal-meta"></div>
       <p id="modal-description"></p>

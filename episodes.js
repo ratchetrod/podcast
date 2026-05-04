@@ -69,43 +69,63 @@ function truncate(text) {
 // Populated after episodes.json loads
 const allEpisodes = [];
 
+function parseEpisodeDate(value) {
+  const timestamp = Date.parse(value || "");
+  return Number.isNaN(timestamp) ? 0 : timestamp;
+}
+
+function normalizeDisplayTitle(title) {
+  const raw = String(title || "").trim();
+  const cleaned = raw
+    .replace(/\s*#\S+/g, "")
+    .replace(/\s{2,}/g, " ")
+    .trim();
+
+  if (!cleaned) return cleaned;
+
+  const letters = cleaned.replace(/[^A-Za-z]/g, "");
+  const uppercaseCount = (letters.match(/[A-Z]/g) || []).length;
+  const lowercaseCount = (letters.match(/[a-z]/g) || []).length;
+  const looksShouty = uppercaseCount > 8 && uppercaseCount > lowercaseCount * 3;
+
+  if (!looksShouty) return cleaned;
+
+  return cleaned
+    .toLowerCase()
+    .replace(/(^|[\s([{\-+/:"])([a-z])/g, (_, lead, char) => `${lead}${char.toUpperCase()}`)
+    .replace(/\bW\/\b/g, "w/")
+    .replace(/\bIi\b/g, "II")
+    .replace(/\bIii\b/g, "III")
+    .replace(/\bIv\b/g, "IV")
+    .replace(/\bVi\b/g, "VI")
+    .replace(/\bVii\b/g, "VII")
+    .replace(/\bViii\b/g, "VIII");
+}
+
 function buildCard(ep, index) {
+  const displayTitle = normalizeDisplayTitle(ep.title);
+  const metaMarkup = ep.date ? `<p class="card-date">${ep.date}</p>` : "";
+
   const youtube = validId(ep.youtube)
-    ? `<div class="card-video">
-        <iframe
-          src="https://www.youtube.com/embed/${ep.youtube}"
-          frameborder="0"
-          allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
-          allowfullscreen
-        ></iframe>
+    ? `<div class="card-video" data-yt="${ep.youtube}">
+        <img src="https://img.youtube.com/vi/${ep.youtube}/hqdefault.jpg" alt="${displayTitle}" loading="lazy" />
+        <button class="play-btn" aria-label="Play video">
+          <svg viewBox="0 0 68 48" width="68" height="48"><path d="M66.5 7.7c-.8-2.9-2.5-5.4-5.4-6.2C55.8.1 34 0 34 0S12.2.1 6.9 1.5c-2.9.8-4.6 3.3-5.4 6.2C.1 13 0 24 0 24s.1 11 1.5 16.3c.8 2.9 2.5 5.4 5.4 6.2C12.2 47.9 34 48 34 48s21.8-.1 27.1-1.5c2.9-.8 4.6-3.3 5.4-6.2C67.9 35 68 24 68 24s-.1-11-1.5-16.3z" fill="rgba(0,0,0,0.6)"/><path d="M45 24L27 14v20" fill="#fff"/></svg>
+        </button>
       </div>`
-    : "";
-
-  const spotify = validId(ep.spotify)
-    ? `<iframe
-        class="card-spotify"
-        src="https://open.spotify.com/embed/episode/${ep.spotify}"
-        width="100%"
-        height="80"
-        frameborder="0"
-        allowtransparency="true"
-        allow="encrypted-media"
-      ></iframe>`
-    : "";
-
-  const desc = ep.description || "";
-  const { short, isTruncated } = truncate(desc);
-  const readMore = isTruncated
-    ? `<button class="read-more" data-index="${index}">Read more</button>`
-    : "";
+    : `<div class="card-video card-video-fallback">
+        <div class="card-video-placeholder">ARCHIVE</div>
+      </div>`;
 
   return `
     <div class="card" id="card-${index}">
-      <h3>${ep.title}</h3>
-      <p class="card-desc">${short}${readMore}</p>
-      <div class="ep-meta">${ep.date || ""}</div>
-      ${spotify}
-      ${youtube}
+      <div class="card-video-wrap">
+        ${youtube}
+      </div>
+      <div class="card-copy">
+        <h3>${displayTitle}</h3>
+        ${metaMarkup}
+      </div>
     </div>`;
 }
 
@@ -113,13 +133,8 @@ function updateCard(index) {
   const ep = allEpisodes[index];
   const card = document.getElementById(`card-${index}`);
   if (!card) return;
-  const descEl = card.querySelector(".card-desc");
-  const { short, isTruncated } = truncate(ep.description || "");
-  const readMore = isTruncated
-    ? `<button class="read-more" data-index="${index}">Read more</button>`
-    : "";
-  descEl.innerHTML = short + readMore;
-  if (ep.date) card.querySelector(".ep-meta").textContent = ep.date;
+  const metaEl = card.querySelector(".card-meta-inline");
+  if (ep.date && metaEl) metaEl.textContent = ep.date;
 }
 
 function buildDishList(dishes) {
@@ -127,7 +142,7 @@ function buildDishList(dishes) {
 }
 
 function openModal(ep) {
-  document.getElementById("modal-title").textContent = ep.title;
+  document.getElementById("modal-title").textContent = normalizeDisplayTitle(ep.title);
   document.getElementById("modal-meta").textContent = ep.date;
   document.getElementById("modal-description").textContent = ep.description || "";
   document.getElementById("modal-overlay").classList.add("open");
@@ -150,8 +165,8 @@ function initCarousel(trackEl, dotsEl) {
   function getVisible() {
     if (window.innerWidth <= 600) return 1;
     if (window.innerWidth <= 800) return 2;
-    if (window.innerWidth <= 1000) return 3;
-    if (window.innerWidth <= 1200) return 4;
+    if (window.innerWidth <= 1100) return 3;
+    if (window.innerWidth <= 1400) return 4;
     return 5;
   }
 
@@ -228,6 +243,9 @@ async function loadEpisodes() {
   if (kitchenEpisodes.length === 0) kitchenEpisodes = sampleKitchenEpisodes;
   if (couchEpisodes.length === 0)   couchEpisodes   = sampleCouchEpisodes;
 
+  kitchenEpisodes.sort((a, b) => parseEpisodeDate(b.date) - parseEpisodeDate(a.date));
+  couchEpisodes.sort((a, b) => parseEpisodeDate(b.date) - parseEpisodeDate(a.date));
+
   // Rebuild allEpisodes and render
   allEpisodes.length = 0;
   allEpisodes.push(...kitchenEpisodes, ...couchEpisodes);
@@ -254,7 +272,160 @@ document.addEventListener("keydown", function(e) {
 document.addEventListener("click", function(e) {
   if (e.target.classList.contains("read-more")) {
     openModal(allEpisodes[e.target.dataset.index]);
+    return;
+  }
+  const toggleBtn = e.target.closest(".toggle-details");
+  if (toggleBtn) {
+    const card = toggleBtn.closest(".card");
+    card.classList.toggle("details-hidden");
+    return;
+  }
+  const playBtn = e.target.closest(".play-btn");
+  if (playBtn) {
+    const wrapper = playBtn.closest(".card-video");
+    const ytId = wrapper.dataset.yt;
+    if (ytId) {
+      wrapper.innerHTML = `<iframe src="https://www.youtube.com/embed/${ytId}?autoplay=1" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen></iframe>`;
+    }
   }
 });
 
 loadEpisodes();
+
+function initRevealAnimations() {
+  const reveals = document.querySelectorAll(".reveal");
+  if (!reveals.length) return;
+
+  const observer = new IntersectionObserver((entries) => {
+    entries.forEach((entry) => {
+      if (entry.isIntersecting) {
+        entry.target.classList.add("is-visible");
+        observer.unobserve(entry.target);
+      }
+    });
+  }, {
+    threshold: 0.18,
+    rootMargin: "0px 0px -10% 0px",
+  });
+
+  reveals.forEach((el) => observer.observe(el));
+}
+
+function initLoopingTracks() {
+  document.querySelectorAll(".hero-ribbon-track, .blend-band-copy").forEach((track) => {
+    if (track.dataset.loopReady === "true") return;
+    track.innerHTML += track.innerHTML;
+    track.dataset.loopReady = "true";
+  });
+}
+
+function initHeroTilt() {
+  const stage = document.querySelector(".hero-stage");
+  if (!stage || window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
+
+  stage.addEventListener("pointermove", (event) => {
+    const rect = stage.getBoundingClientRect();
+    const x = (event.clientX - rect.left) / rect.width;
+    const y = (event.clientY - rect.top) / rect.height;
+    const rotateY = (x - 0.5) * 8;
+    const rotateX = (0.5 - y) * 6;
+    stage.style.transform = `perspective(1200px) rotateX(${rotateX}deg) rotateY(${rotateY}deg)`;
+  });
+
+  stage.addEventListener("pointerleave", () => {
+    stage.style.transform = "";
+  });
+}
+
+function initHeroSlideshow() {
+  const slideshow = document.querySelector("[data-hero-slideshow]");
+  if (!slideshow) return;
+
+  const slides = Array.from(slideshow.querySelectorAll(".hero-slide"));
+  const dotsWrap = slideshow.querySelector(".hero-slideshow-dots");
+  const prevBtn = slideshow.querySelector(".hero-slideshow-arrow-prev");
+  const nextBtn = slideshow.querySelector(".hero-slideshow-arrow-next");
+  const currentEl = slideshow.querySelector(".hero-slideshow-current");
+  const totalEl = slideshow.querySelector(".hero-slideshow-total");
+  if (slides.length <= 1 || !dotsWrap || !prevBtn || !nextBtn || !currentEl || !totalEl) return;
+
+  dotsWrap.innerHTML = slides.map((_, index) => (
+    `<button class="hero-slideshow-dot${index === 0 ? " is-active" : ""}" type="button" role="tab" aria-selected="${index === 0}" aria-label="Show photo ${index + 1}"></button>`
+  )).join("");
+  totalEl.textContent = String(slides.length);
+
+  const dots = Array.from(dotsWrap.querySelectorAll(".hero-slideshow-dot"));
+
+  const reduceMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+  let current = 0;
+  let intervalId = null;
+
+  function goTo(index) {
+    current = (index + slides.length) % slides.length;
+    slides.forEach((slide, slideIndex) => {
+      slide.classList.toggle("is-active", slideIndex === current);
+    });
+    dots.forEach((dot, dotIndex) => {
+      const isActive = dotIndex === current;
+      dot.classList.toggle("is-active", isActive);
+      dot.setAttribute("aria-selected", String(isActive));
+    });
+    currentEl.textContent = String(current + 1);
+  }
+
+  function stopAutoPlay() {
+    if (!intervalId) return;
+    window.clearInterval(intervalId);
+    intervalId = null;
+  }
+
+  function startAutoPlay() {
+    if (reduceMotion) return;
+    stopAutoPlay();
+    intervalId = window.setInterval(() => {
+      goTo(current + 1);
+    }, 4200);
+  }
+
+  dots.forEach((dot, index) => {
+    dot.addEventListener("click", () => {
+      goTo(index);
+      startAutoPlay();
+    });
+  });
+
+  prevBtn.addEventListener("click", () => {
+    goTo(current - 1);
+    startAutoPlay();
+  });
+
+  nextBtn.addEventListener("click", () => {
+    goTo(current + 1);
+    startAutoPlay();
+  });
+
+  slideshow.addEventListener("mouseenter", stopAutoPlay);
+  slideshow.addEventListener("mouseleave", startAutoPlay);
+  slideshow.addEventListener("focusin", stopAutoPlay);
+  slideshow.addEventListener("focusout", startAutoPlay);
+  slideshow.addEventListener("keydown", (event) => {
+    if (event.key === "ArrowLeft") {
+      goTo(current - 1);
+      startAutoPlay();
+      event.preventDefault();
+    }
+    if (event.key === "ArrowRight") {
+      goTo(current + 1);
+      startAutoPlay();
+      event.preventDefault();
+    }
+  });
+
+  goTo(0);
+  startAutoPlay();
+}
+
+initRevealAnimations();
+initLoopingTracks();
+initHeroTilt();
+initHeroSlideshow();
