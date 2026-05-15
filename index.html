@@ -133,11 +133,41 @@
         </div>
       </section>
 
+      <section class="home-contact reveal" aria-labelledby="home-contact-title">
+        <div class="home-contact-shell">
+          <p class="home-contact-kicker">Contact Us</p>
+          <h2 id="home-contact-title">Let’s Keep The Conversation Going.</h2>
+          <p class="home-contact-copy">For guest inquiries, sponsorships, collaborations, or general questions, reach out and we’ll get back to you.</p>
+          <form class="home-contact-form" id="home-contact-form">
+            <div class="home-contact-grid">
+              <div class="home-contact-field">
+                <label for="home-name">Name</label>
+                <input type="text" id="home-name" name="name" placeholder="Your name" />
+              </div>
+              <div class="home-contact-field">
+                <label for="home-email">Email<span aria-hidden="true">*</span></label>
+                <input type="email" id="home-email" name="email" placeholder="you@example.com" required />
+              </div>
+            </div>
+            <div class="home-contact-field">
+              <label for="home-message">Message</label>
+              <textarea id="home-message" name="message" placeholder="How can we help?"></textarea>
+            </div>
+            <label class="home-contact-checkbox">
+              <input type="checkbox" id="home-updates" name="updates" />
+              <span>Sign up for our email list for updates, promotions, and more.</span>
+            </label>
+            <div class="home-contact-actions">
+              <button type="submit" class="home-contact-button home-contact-button-primary">Email Us</button>
+            </div>
+          </form>
+        </div>
+      </section>
+
     </main>
 
     <footer>
       <p><a href="mailto:info@thekitchencouch.com">info@thekitchencouch.com</a></p>
-      <p><a href="contact.html">Contact Us</a></p>
       &copy; 2025-2026 The Kitchen Couch Podcast. All rights reserved.
     </footer>
   </div>
@@ -152,5 +182,27 @@
   </div>
 
   <script src="episodes.js"></script>
+  <script>
+    const homeContactForm = document.getElementById("home-contact-form");
+    if (homeContactForm) {
+      homeContactForm.addEventListener("submit", (event) => {
+        event.preventDefault();
+
+        const formData = new FormData(homeContactForm);
+        const name = (formData.get("name") || "").toString().trim();
+        const email = (formData.get("email") || "").toString().trim();
+        const message = (formData.get("message") || "").toString().trim();
+        const wantsUpdates = formData.get("updates") ? "Yes" : "No";
+
+        const subjectName = name || "Website Inquiry";
+        const subject = encodeURIComponent(`Kitchen Couch Contact - ${subjectName}`);
+        const body = encodeURIComponent(
+          `Name: ${name || "N/A"}\nEmail: ${email}\nEmail List Sign Up: ${wantsUpdates}\n\nMessage:\n${message || "N/A"}`
+        );
+
+        window.location.href = `mailto:info@thekitchencouch.com?subject=${subject}&body=${body}`;
+      });
+    }
+  </script>
 </body>
 </html>
